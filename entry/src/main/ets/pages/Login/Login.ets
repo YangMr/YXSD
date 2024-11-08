@@ -1,5 +1,7 @@
+import { UserSettingClass } from 'basic'
 import { loginApi } from '../../api'
 import { AccountFormModel } from '../../models'
+import { router } from '@kit.ArkUI'
 
 
 @Entry
@@ -29,11 +31,14 @@ struct Login {
       })
 
       // TODO : 将token存储到本地
+      // 调用存储token方法
+      const setting = new UserSettingClass(getContext())
+      setting.setUserToken(res)
 
       // TODO : 跳转到主页(首页)
-      // router.pushUrl({
-      //   url: "pages/Index"
-      // })
+      router.pushUrl({
+        url: "pages/Index/Index"
+      })
     } catch (e) {
       AlertDialog.show({
         message: JSON.stringify(e)
