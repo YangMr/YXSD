@@ -1,6 +1,5 @@
 import { loginApi } from '../../api'
 import { AccountFormModel } from '../../models'
-import { router } from '@kit.ArkUI'
 
 
 @Entry
@@ -32,9 +31,9 @@ struct Login {
       // TODO : 将token存储到本地
 
       // TODO : 跳转到主页(首页)
-      router.pushUrl({
-        url: "pages/Index"
-      })
+      // router.pushUrl({
+      //   url: "pages/Index"
+      // })
     } catch (e) {
       AlertDialog.show({
         message: JSON.stringify(e)
