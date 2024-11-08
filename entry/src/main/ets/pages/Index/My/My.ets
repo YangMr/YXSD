@@ -1,15 +1,53 @@
+import { ICard, ICardItem } from 'basic'
+import { getUserInfoApi } from '../../../api'
+import { UserInfoModel } from '../../../models'
+
 @Component
 struct My {
+  // 3. 在我的页面创建一个变量,保存获取到用户信息
+  @State
+  userInfo: UserInfoModel = {
+    avatar: $r("app.media.ic_avatar_driver"),
+    name: "",
+    number: "",
+    phone: ""
+  } as UserInfoModel
+  @Consume
+  @Watch("getUserInfo")
+  currentName: string
+
+  // 页面第一次加载的时候,才会执行当前的方法
+  // aboutToAppear(): void {
+  //   // 4. 调用获取用户信息接口
+  //   this.getUserInfo()
+  // }
+
+  // 获取用户信息方法
+  async getUserInfo() {
+    try {
+      if (this.currentName === "my") {
+        this.userInfo = await getUserInfoApi()
+        AlertDialog.show({
+          message: "aaa"
+        })
+      }
+
+    } catch (e) {
+      console.log("error", e)
+    }
+  }
+
   build() {
     Column() {
+
       // 用户信息模块
       Column() {
-        Image($r("app.media.ic_avatar_driver"))
+        Image(this.userInfo?.avatar)
           .width(67)
           .height(67)
           .borderRadius(33.5)
 
-        Text("李明")
+        Text(this.userInfo?.name)
           .fontSize(18)
           .fontWeight(600)
           .lineHeight(25)
@@ -19,13 +57,13 @@ struct My {
           })
           .fontColor($r("app.color.white"))
 
-        Text("司机编号: 66666666")
+        Text("司机编号: " + this.userInfo.number)
           .fontSize(14)
           .fontWeight(400)
           .lineHeight(20)
           .fontColor($r("app.color.white"))
 
-        Text("手机号: 17802901987")
+        Text("手机号: " + this.userInfo.phone)
           .fontSize(14)
           .fontWeight(400)
           .lineHeight(20)
@@ -40,6 +78,7 @@ struct My {
       .backgroundImageSize(ImageSize.Cover)
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center)
+
 
       // 本月任务
       Column() {
@@ -114,77 +153,96 @@ struct My {
       .height(134)
 
       // 选项列表
-      Column() {
-        Row() {
-          Text("车辆信息")
-            .fontSize(16)
-            .fontWeight(400)
-            .fontColor($r("app.color.text_primary"))
-
-          Image($r("app.media.ic_btn_more"))
-            .width(24)
-            .height(24)
-        }
-        .width("100%")
-        .height(60)
-        .border({
-          width: {
-            bottom: 1
-          },
-          color: $r("app.color.background_page")
+      ICard() {
+        // 尾随闭包的写法
+        ICardItem({
+          leftText: "车辆信息",
+          // rightText: "123"
+          onRightClick() {
+            AlertDialog.show({
+              message: "123"
+            })
+          }
         })
-        .justifyContent(FlexAlign.SpaceBetween)
-
-        Row() {
-          Text("任务数据")
-            .fontSize(16)
-            .fontWeight(400)
-            .fontColor($r("app.color.text_primary"))
-
-          Image($r("app.media.ic_btn_more"))
-            .width(24)
-            .height(24)
-        }
-        .width("100%")
-        .height(60)
-        .border({
-          width: {
-            bottom: 1
-          },
-          color: $r("app.color.background_page")
+        ICardItem({
+          leftText: "任务数据"
         })
-        .justifyContent(FlexAlign.SpaceBetween)
-
-        Row() {
-          Text("系统设置")
-            .fontSize(16)
-            .fontWeight(400)
-            .fontColor($r("app.color.text_primary"))
-
-          Image($r("app.media.ic_btn_more"))
-            .width(24)
-            .height(24)
-        }
-        .width("100%")
-        .height(60)
-        .border({
-          width: {
-            bottom: 1
-          },
-          color: $r("app.color.background_page")
+        ICardItem({
+          leftText: "系统设置"
         })
-        .justifyContent(FlexAlign.SpaceBetween)
       }
-      .margin({
-        left: 15,
-        right: 15
-      })
-      .backgroundColor($r("app.color.white"))
-      .borderRadius(8)
-      .padding({
-        left: 18,
-        right: 18
-      })
+
+      // Column() {
+      //   Row() {
+      //     Text("车辆信息")
+      //       .fontSize(16)
+      //       .fontWeight(400)
+      //       .fontColor($r("app.color.text_primary"))
+      //
+      //     Image($r("app.media.ic_btn_more"))
+      //       .width(24)
+      //       .height(24)
+      //   }
+      //   .width("100%")
+      //   .height(60)
+      //   .border({
+      //     width: {
+      //       bottom: 1
+      //     },
+      //     color: $r("app.color.background_page")
+      //   })
+      //   .justifyContent(FlexAlign.SpaceBetween)
+      //
+      //   Row() {
+      //     Text("任务数据")
+      //       .fontSize(16)
+      //       .fontWeight(400)
+      //       .fontColor($r("app.color.text_primary"))
+      //
+      //     Image($r("app.media.ic_btn_more"))
+      //       .width(24)
+      //       .height(24)
+      //   }
+      //   .width("100%")
+      //   .height(60)
+      //   .border({
+      //     width: {
+      //       bottom: 1
+      //     },
+      //     color: $r("app.color.background_page")
+      //   })
+      //   .justifyContent(FlexAlign.SpaceBetween)
+      //
+      //   Row() {
+      //     Text("系统设置")
+      //       .fontSize(16)
+      //       .fontWeight(400)
+      //       .fontColor($r("app.color.text_primary"))
+      //
+      //     Image($r("app.media.ic_btn_more"))
+      //       .width(24)
+      //       .height(24)
+      //   }
+      //   .width("100%")
+      //   .height(60)
+      //   .border({
+      //     width: {
+      //       bottom: 1
+      //     },
+      //     color: $r("app.color.background_page")
+      //   })
+      //   .justifyContent(FlexAlign.SpaceBetween)
+      // }
+      // .margin({
+      //   left: 15,
+      //   right: 15
+      // })
+      // .backgroundColor($r("app.color.white"))
+      // .borderRadius(8)
+      // .padding({
+      //   left: 18,
+      //   right: 18
+      // })
 
     }
     .width("100%")

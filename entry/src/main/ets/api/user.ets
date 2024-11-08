@@ -2,7 +2,7 @@
 import { Http } from 'basic'
 
 // 导入登录参数类型
-import { AccountFormModel } from '../models'
+import { AccountFormModel, UserInfoModel } from '../models'
 
 // 2. 导出并创建对应接口方法
 // 3. 给参数以及返回的数据指定类型
@@ -15,5 +15,10 @@ export const loginApi = (data: AccountFormModel): Promise<string> => {
 }
 
 // 获取用户信息接口
+// 1. 封装用户信息的API接口
+// 2. 定义接口返回的数据类型
+export const getUserInfoApi = (): Promise<UserInfoModel> => {
+  return Http.get<UserInfoModel>("/users")
+}
 
 // 退出登录接口
