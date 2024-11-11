@@ -1,12 +1,12 @@
 @Preview
 @Component
-struct ISkeleton {
+export struct ISkeleton {
   @State
   showAvatar: boolean = true
   @State
   count: number = 3
   @State
-  currentColor: string = "#f60"
+  currentColor: string = "#f3f4f5"
   @State
   timer: number = -1
 
@@ -16,10 +16,10 @@ struct ISkeleton {
 
   splash() {
     this.timer = setInterval(() => {
-      if (this.currentColor === "#f60") {
-        this.currentColor = "#ccc"
+      if (this.currentColor === "#f3f4f5") {
+        this.currentColor = "#f7f8f9"
       } else {
-        this.currentColor = "#f60"
+        this.currentColor = "#f3f4f5"
       }
     }, 100)
   }
@@ -79,4 +79,3 @@ struct ISkeleton {
   }
 }
 
-export default ISkeleton
