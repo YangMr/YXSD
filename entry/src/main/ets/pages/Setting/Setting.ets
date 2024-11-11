@@ -1,68 +1,43 @@
-import { ICard, ICardItem, INavBar } from 'basic';
+import { ICard, ICardItem, IConfirm, INavBar, UserSettingClass } from 'basic';
+import { router } from '@kit.ArkUI';
 
 @Entry
 @Component
 struct Setting {
   // 1. 实例化弹窗对象
   controller: CustomDialogController = new CustomDialogController({
-    builder: this.IConfirm,
+    builder: IConfirm({
+      // message: "确定要删除这张照片吗?",
+      buttonList: [
+        {
+          text: "取消",
+          fontColor: $r("app.color.primary"),
+          fontSize: 18,
+        },
+        {
+          text: "确定",
+          fontColor: $r("app.color.primary"),
+          action: () => {
+            // 调用退出登录方法
+            this.logout()
+          },
+          fontSize: 18
+        }
+      ]
+    }),
     // 取消默认的弹窗样式
     customStyle: true
   })
 
-  // 2. 定义弹窗的内容
-  @Builder
-  IConfirm() {
-    Row() {
-      Column() {
-        Row() {
-          Text("确定要退出登录吗?")
-            .fontSize(16)
-            .fontColor($r("app.color.text_primary"))
-            .fontWeight(600)
-        }
-        .width("100%")
-        .height(88)
-        .justifyContent(FlexAlign.Center)
-        .border({
-          width: {
-            bottom: 1
-          },
-          color: $r("app.color.background_divider")
-        })
+  // 退出登录
+  logout() {
+    // 删除token
+    const setting = new UserSettingClass(getContext())
+    setting.deleteUserToken()
 
-        Row() {
-          Text("取消")
-            .fontSize(16)
-            .textAlign(TextAlign.Center)
-            .layoutWeight(1)
-            .fontColor($r("app.color.text_secondary"))
-            .height("100%")
-            .border({
-              width: {
-                right: 1
-              },
-              color: $r("app.color.background_divider")
-            })
-
-          Text("确定")
-            .fontSize(16)
-            .textAlign(TextAlign.Center)
-            .layoutWeight(1)
-            .fontColor($r("app.color.text_secondary"))
-            .height("100%")
-        }
-        .width("100%")
-        .height(49)
-      }
-      .width("100%")
-      .backgroundColor($r("app.color.white"))
-      .borderRadius(12)
-    }
-    .width("100%")
-    .padding({
-      left: 25,
-      right: 25
+    // 跳转到登录页
+    router.replaceUrl({
+      url: "pages/Login/Login"
     })
   }
 
