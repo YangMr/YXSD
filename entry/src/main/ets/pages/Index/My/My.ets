@@ -1,6 +1,7 @@
 import { ICard, ICardItem } from 'basic'
 import { getUserInfoApi, getUserTaskInfoApi } from '../../../api'
 import { UserInfoModel, UserTaskInfoModel, UserTaskInfoParamsModel } from '../../../models'
+import { router } from '@kit.ArkUI'
 
 @Component
 struct My {
@@ -183,7 +184,12 @@ struct My {
           leftText: "任务数据"
         })
         ICardItem({
-          leftText: "系统设置"
+          leftText: "系统设置",
+          onRightClick: () => {
+            router.pushUrl({
+              url: "pages/Setting/Setting"
+            })
+          }
         })
       }
 
