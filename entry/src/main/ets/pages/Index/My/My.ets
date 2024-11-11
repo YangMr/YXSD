@@ -1,7 +1,8 @@
-import { ICard, ICardItem, ISkeleton } from 'basic'
+import { ICard, ICardItem } from 'basic'
 import { getUserInfoApi, getUserTaskInfoApi } from '../../../api'
 import { UserInfoModel, UserTaskInfoModel, UserTaskInfoParamsModel } from '../../../models'
 import { router } from '@kit.ArkUI'
+import MySkeleton from './Skeleton/My-Skeleton'
 
 @Component
 struct My {
@@ -60,7 +61,8 @@ struct My {
   build() {
     Column() {
       if (this.loading && !this.userInfo.name && !this.userTaskInfo.taskAmounts) {
-        ISkeleton()
+        // ISkeleton()
+        MySkeleton()
       } else {
         Column() {
 

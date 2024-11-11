@@ -7,3 +7,5 @@ export * from "./INavBar"
 export * from "./IConfirm"
 
 export * from "./ISkeleton"
+
+export * from "./INewSkeleton"
