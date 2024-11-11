@@ -1,6 +1,6 @@
 import { ICard, ICardItem } from 'basic'
-import { getUserInfoApi } from '../../../api'
-import { UserInfoModel } from '../../../models'
+import { getUserInfoApi, getUserTaskInfoApi } from '../../../api'
+import { UserInfoModel, UserTaskInfoModel, UserTaskInfoParamsModel } from '../../../models'
 
 @Component
 struct My {
@@ -13,25 +13,40 @@ struct My {
     phone: ""
   } as UserInfoModel
   @Consume
-  @Watch("getUserInfo")
+  @Watch("initUserInfo")
   currentName: string
+  // 定义获取任务数据接口的参数
+  @State
+  queryTaskParams: UserTaskInfoParamsModel = {
+    month: (new Date().getMonth() + 1).toString(),
+    year: new Date().getFullYear().toString()
+  }
+  // 初始化一个变量,用来保存请求到的任务数据
+  @State
+  userTaskInfo: UserTaskInfoModel = {} as UserTaskInfoModel
 
-  // 页面第一次加载的时候,才会执行当前的方法
-  // aboutToAppear(): void {
-  //   // 4. 调用获取用户信息接口
-  //   this.getUserInfo()
-  // }
+  // 当进入到我的页面的时候,就会触发当前的方法
+  initUserInfo() {
+    this.getUserInfo()
+    this.getUserTaskInfo()
+  }
 
   // 获取用户信息方法
   async getUserInfo() {
     try {
       if (this.currentName === "my") {
         this.userInfo = await getUserInfoApi()
-        AlertDialog.show({
-          message: "aaa"
-        })
       }
 
+    } catch (e) {
+      console.log("error", e)
+    }
+  }
+
+  // 获取任务数据方法
+  async getUserTaskInfo() {
+    try {
+      this.userTaskInfo = await getUserTaskInfoApi(this.queryTaskParams)
     } catch (e) {
       console.log("error", e)
     }
@@ -89,7 +104,7 @@ struct My {
 
         Row() {
           Column() {
-            Text("18")
+            Text(this.userTaskInfo.taskAmounts?.toString() || '')
               .fontSize(18)
               .fontColor($r("app.color.text_primary"))
               .lineHeight(25)
@@ -104,7 +119,7 @@ struct My {
           }
 
           Column() {
-            Text("16")
+            Text(this.userTaskInfo.completedAmounts?.toString() || "")
               .fontSize(18)
               .fontColor($r("app.color.text_primary"))
               .lineHeight(25)
@@ -119,7 +134,7 @@ struct My {
           }
 
           Column() {
-            Text("1000")
+            Text(this.userTaskInfo.transportMileage?.toString() || "")
               .fontSize(18)
               .fontColor($r("app.color.text_primary"))
               .lineHeight(25)

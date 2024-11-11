@@ -26,10 +26,6 @@ struct Login {
     try {
       const res = await loginApi(this.accountForm)
 
-      AlertDialog.show({
-        message: JSON.stringify(res)
-      })
-
       // TODO : 将token存储到本地
       // 调用存储token方法
       const setting = new UserSettingClass(getContext())
