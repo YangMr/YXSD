@@ -3,7 +3,8 @@ export struct INewSkeleton {
   customWidth: number | string = ""
   customHeight: number | string = ""
   circle: boolean = false
-  bgColor: string = "#f3f4f5"
+  // bgColor: string = "#f3f4f5"
+  bgColor: string = "rgb(245, 245, 241)"
   bdRadius: number | string | BorderRadiuses = ""
   @State
   timer: number = -1
@@ -14,10 +15,10 @@ export struct INewSkeleton {
 
   splash() {
     this.timer = setInterval(() => {
-      if (this.bgColor === "#f3f4f5") {
+      if (this.bgColor === "rgb(245, 245, 241)") {
         this.bgColor = "#f7f8f9"
       } else {
-        this.bgColor = "#f3f4f5"
+        this.bgColor = "rgb(245, 245, 241)"
       }
     }, 100)
   }

@@ -1,9 +1,13 @@
+import { TaskTabs } from './TaskTabs'
+
 @Component
 struct Task {
   build() {
     Column() {
-      Text("Task --- component");
+      TaskTabs()
     }
+    .width("100%")
+    .height("100%")
   }
 }
 

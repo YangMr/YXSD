@@ -27,7 +27,7 @@ struct Skeleton {
         INewSkeleton({
           customWidth: "100%",
           customHeight: "100%",
-          bgColor: "#efefef",
+          // bgColor: "#efefef",
           bdRadius: 10
         })
       }
