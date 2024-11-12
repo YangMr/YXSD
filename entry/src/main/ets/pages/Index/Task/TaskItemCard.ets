@@ -85,10 +85,16 @@ struct TaskItemCard {
         .alignItems(HorizontalAlign.Start)
 
         Button("提货", { type: ButtonType.Capsule })
-          .backgroundColor($r("app.color.primary"))
+          .backgroundColor(this.taskItem.enablePickUp ? $r("app.color.primary") : $r("app.color.primary_disabled"))
           .fontColor($r("app.color.white"))
           .fontSize(14)
           .height(32)
+          .enabled(this.taskItem.enablePickUp)
+          .onClick(() => {
+            AlertDialog.show({
+              message: "aaa"
+            })
+          })
 
       }
       .width("100%")
