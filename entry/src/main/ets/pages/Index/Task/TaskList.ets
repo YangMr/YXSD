@@ -1,5 +1,6 @@
 import { getTaskListApi } from '../../../api/task';
 import { TaskListDataModel, TaskListItemDataModel, TaskListParamsModel, TaskTypeEnum } from '../../../models';
+import TaskItemCard from './TaskItemCard';
 
 @Component
 struct TaskList {
@@ -10,7 +11,7 @@ struct TaskList {
   @State
   queryParams: TaskListParamsModel = {
     page: 1,
-    pageSize: 5,
+    pageSize: 10,
     status: TaskTypeEnum.Waiting
   }
 
@@ -30,9 +31,19 @@ struct TaskList {
   }
 
   build() {
-    Column() {
-      Text(JSON.stringify(this.taskList, null, 2));
+    List({ space: 10 }) {
+      ForEach(this.taskList, (item: TaskListItemDataModel) => {
+        ListItem() {
+          TaskItemCard({
+            taskItem: item
+          })
+        }
+      })
     }
+    .width("100%")
+    .height("100%")
+    .padding(15)
+    .backgroundColor($r("app.color.background_page"))
   }
 }
 
