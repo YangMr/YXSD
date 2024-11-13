@@ -1,9 +1,19 @@
 import { TaskListItemDataModel } from '../../../models'
+import { router } from '@kit.ArkUI'
 
 @Component
 struct TaskItemCard {
   @Prop
   taskItem: TaskListItemDataModel = {} as TaskListItemDataModel
+
+  toPickUp() {
+    router.pushUrl({
+      url: "pages/TaskDetail/TaskDetail",
+      params: {
+        id: this.taskItem.id
+      }
+    })
+  }
 
   build() {
     Column() {
@@ -104,6 +114,9 @@ struct TaskItemCard {
     .backgroundColor($r("app.color.white"))
     .borderRadius(10)
     .padding(20)
+    .onClick(() => {
+      this.toPickUp()
+    })
   }
 }
 

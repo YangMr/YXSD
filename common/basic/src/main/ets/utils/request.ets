@@ -31,12 +31,10 @@ service.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 // 5. 创建响应拦截器
 service.interceptors.response.use((response: AxiosResponse) => {
   // 如果状态码是200 , 并页业务码也是200, 再返回的数据的时候,直接将需要的数据从data.data中获取出来
-
   if (response.status === 200 && response.data.code === 200) {
     return response.data.data
   }
 }, (error: AxiosError) => {
-
   // token过期的过期处理
   if (error.response?.status === 401) {
     promptAction.showToast({

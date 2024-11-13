@@ -5,6 +5,7 @@ export struct INavBar {
   title: string = "测试标题栏"
   showBackIcon: boolean = true
   backIcon: ResourceStr = $r("app.media.ic_btn_nav_back")
+  rightText: string = ""
 
   build() {
     Stack({ alignContent: Alignment.Start }) {
@@ -15,11 +16,19 @@ export struct INavBar {
             .fontSize(18)
             .fontWeight(600)
         }
-
       }
       .width("100%")
       .height("100%")
       .justifyContent(FlexAlign.Center)
+
+      if (this.rightText) {
+        Row() {
+          Text(this.rightText)
+        }
+        .width("100%")
+        .justifyContent(FlexAlign.End)
+      }
+
 
       if (this.showBackIcon) {
         Image(this.backIcon)
