@@ -13,3 +13,7 @@ export * from "./INewSkeleton"
 export * from "./IList"
 
 export * from "./IToggleCard"
+
+export * from "./IUpload"
+
+export * from "./IPreview"
