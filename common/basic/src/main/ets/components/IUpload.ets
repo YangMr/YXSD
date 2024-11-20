@@ -37,6 +37,7 @@ export struct IUpload {
     // 将选择的图片保存到imageList里面
     this.imageList.push(...data)
 
+
     // 将选择的图片存储到沙箱
     SaveLocalFile(this.imageList)
 

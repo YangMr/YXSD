@@ -1,10 +1,14 @@
 import { fileIo } from '@kit.CoreFileKit'
 import { ImageListModel } from '../models'
+import { request } from '@kit.BasicServicesKit'
+import { uploadImageAPI } from '../api'
 
-export const SaveLocalFile = (dataSource: ImageListModel[]) => {
+
+export const SaveLocalFile = async (dataSource: ImageListModel[]) => {
   // 1. 获取到存储的沙箱目录 --- files目录
-  const saveDir = getContext().filesDir
+  const saveDir = getContext().cacheDir
 
+  const fileParams: request.File[] = []
   dataSource.forEach((item: ImageListModel) => {
     // 2. 图片的名称
     // const imgName = util.generateRandomUUID() + ".jpg"
@@ -15,5 +19,23 @@ export const SaveLocalFile = (dataSource: ImageListModel[]) => {
     fileIo.copyFileSync(file.fd, saveDir + "/" + imgName)
     // 5. 关闭文件数据的读取
     fileIo.closeSync(file.fd)
+
+    // 要上传的文件对象
+    fileParams.push({
+      filename: imgName,
+      name: "file",
+      uri: `internal://cache/${imgName}`,
+      type: "jpg"
+    })
+
+
+  })
+  AlertDialog.show({
+    message: "1"
+  })
+  const result = await uploadImageAPI(getContext(), fileParams)
+  AlertDialog.show({
+    message: JSON.stringify(result, null, 2)
   })
 }
+
