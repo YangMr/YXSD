@@ -68,10 +68,11 @@ interface ResponseData {
 
 export async function uploadImageAPI(context: Context, fileParams: request.File[]) {
 
+  // 1. 获取token
   const setting = new UserSettingClass(context)
   const token = setting.getUserToken()
 
-
+  // 2. 发送请求
   const task = await request.uploadFile(context, {
     url: BASE_URL + "/files/upload",
     method: "POST",
@@ -91,7 +92,7 @@ export async function uploadImageAPI(context: Context, fileParams: request.File[
     // ]
   })
 
-
+  // 3. 监听上传成功
   return new Promise<ImageListModel[]>((resolve, reject) => {
     const arr: ImageListModel[] = []
     // 接受上传的数据
@@ -105,19 +106,34 @@ export async function uploadImageAPI(context: Context, fileParams: request.File[
         }
       }
     })
-    // 接受到上传失败的错误信息
+    //  4. 监听上传成功
     task.on("fail", () => {
       AlertDialog.show({
         message: "上传失败"
       })
       reject(new Error("上传失败"))
     })
-    // 不管成功或者失败都会触发的方法
+    // 不管成功或者失败都会触发的方法, 都将结果返回出去
     task.on("complete", () => {
       resolve(arr)
     })
   })
 }
+
+
+/***
+ *
+ * 1. 先打开系统相册(图片选择器)
+ * 2. 获取选择的图片
+ * 3. 将选择的图片存储到沙箱
+ * 4. 将存储到沙箱的图片处理文件上传所需要的对象
+ * 5. 获取token
+ * 6. 发送请求
+ * 7. 监听上传成功
+ * 8. 监听上传失败
+ * 9. 监听不管成功还是失败
+ * 10. 使用promise将成功或者失败的结果返回出去
+ * */
 
 
 
