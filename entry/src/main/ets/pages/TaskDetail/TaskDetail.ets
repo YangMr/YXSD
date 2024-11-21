@@ -1,7 +1,16 @@
-import { router } from '@kit.ArkUI'
-import { BaseBuilderClass, INavBar, IToggleCard, IUpload, RouterParamsModel } from 'basic'
-import { getTaskDetailInfoApi } from '../../api'
-import { TaskDetailInfoModel } from '../../models/task_detail'
+import { promptAction, router } from '@kit.ArkUI'
+import {
+  BaseBuilderClass,
+  ImageListModel,
+  INavBar,
+  IToggleCard,
+  IUpload,
+  RouterParamsModel,
+  SaveLocalFile
+} from 'basic'
+import { deliverApi, getTaskDetailInfoApi, pickUpApi } from '../../api'
+import { TaskTypeEnum } from '../../models'
+import { deliverModel, PickUpModel, TaskDetailInfoModel } from '../../models/task_detail'
 import { TaskDetailSkeleton } from './Skeleton/TaskDetail-Skeleton'
 
 
@@ -14,6 +23,18 @@ struct TaskDetail {
   taskDetailInfo: TaskDetailInfoModel = {} as TaskDetailInfoModel
   @State
   skeletonStatus: boolean = false
+  @State
+  queryParams: PickUpModel = {
+    id: "",
+    cargoPickUpPictureList: [],
+    cargoPictureList: []
+  } as PickUpModel
+  @State
+  deliverParams: deliverModel = {
+    id: "",
+    certificatePictureList: [],
+    deliverPictureList: []
+  } as deliverModel
 
   aboutToAppear(): void {
     this.getParamsData()
@@ -31,6 +52,10 @@ struct TaskDetail {
       this.skeletonStatus = true
       this.taskDetailInfo = await getTaskDetailInfoApi(this.params.id)
       this.skeletonStatus = false
+
+      AlertDialog.show({
+        message: JSON.stringify(this.taskDetailInfo, null, 2)
+      })
     } catch (e) {
       console.log("Error", e)
     }
@@ -192,29 +217,123 @@ struct TaskDetail {
     })
   }
 
+  // 判断有没有上传图片
+  getPickUpEnable() {
+    // 有 return true
+    if (this.taskDetailInfo.cargoPickUpPictureList?.length > 0 && this.taskDetailInfo.cargoPictureList?.length > 0) {
+      return true
+    } else {
+      return false
+    }
+    // 没有return false
+  }
+
   @Builder
   getBottomBtn() {
-    Row() {
-      Button("延迟收货", { type: ButtonType.Capsule })
-        .width(125)
-        .height(50)
-        .fontSize(16)
-        .backgroundColor($r("app.color.btn_gray"))
-        .fontColor($r("app.color.text_primary"))
+    if (this.taskDetailInfo.status === TaskTypeEnum.Waiting) {
+      Row() {
+        Button("延迟收货", { type: ButtonType.Capsule })
+          .width(125)
+          .height(50)
+          .fontSize(16)
+          .backgroundColor($r("app.color.btn_gray"))
+          .fontColor($r("app.color.text_primary"))
 
-      Button("提货")
-        .layoutWeight(1)
-        .height(50)
-        .fontSize(16)
-        .backgroundColor($r("app.color.primary_disabled"))
-        .fontColor($r("app.color.white"))
-        .margin({ left: 13 })
+
+        Button("提货")
+          .layoutWeight(1)
+          .height(50)
+          .fontSize(16)
+          .backgroundColor(this.getPickUpEnable() ? $r("app.color.primary") : $r("app.color.primary_disabled"))
+          .fontColor($r("app.color.white"))
+          .margin({ left: 13 })
+          .enabled(this.getPickUpEnable())
+          .onClick(() => {
+            this.submitPickUp()
+          })
+      }
+      .width("100%")
+      .padding({ left: 15, right: 15 })
+      .backgroundColor($r("app.color.white"))
+      .height(70)
+      .justifyContent(FlexAlign.SpaceBetween)
+    } else if (this.taskDetailInfo.status === TaskTypeEnum.Line) {
+      Row() {
+        Button("异常上报", { type: ButtonType.Capsule })
+          .width(125)
+          .height(50)
+          .fontSize(16)
+          .backgroundColor($r("app.color.btn_gray"))
+          .fontColor($r("app.color.text_primary"))
+
+
+        Button("交货")
+          .layoutWeight(1)
+          .height(50)
+          .fontSize(16)
+          .backgroundColor(this.getPickUpEnable() ? $r("app.color.primary") : $r("app.color.primary_disabled"))
+          .fontColor($r("app.color.white"))
+          .margin({ left: 13 })
+          .enabled(this.getPickUpEnable())
+          .onClick(() => {
+            this.submitDeliver()
+          })
+      }
+      .width("100%")
+      .padding({ left: 15, right: 15 })
+      .backgroundColor($r("app.color.white"))
+      .height(70)
+      .justifyContent(FlexAlign.SpaceBetween)
+
     }
-    .width("100%")
-    .padding({ left: 15, right: 15 })
-    .backgroundColor($r("app.color.white"))
-    .height(70)
-    .justifyContent(FlexAlign.SpaceBetween)
+
+  }
+
+  // 提货
+  async submitPickUp() {
+
+    try {
+      this.queryParams.id = this.params.id
+      const cargoPickUpPictureList = await SaveLocalFile(this.taskDetailInfo.cargoPickUpPictureList)
+      const cargoPickUpPicture = await SaveLocalFile(this.taskDetailInfo.cargoPickUpPictureList)
+      this.queryParams.cargoPickUpPictureList = cargoPickUpPictureList
+      this.queryParams.cargoPictureList = cargoPickUpPicture
+
+      await pickUpApi(this.queryParams)
+
+      // 重新获取任务详情数据
+      this.getTaskDetailInfo()
+
+      promptAction.showToast({
+        message: "提货成功"
+      })
+    } catch (e) {
+      console.log(e)
+    }
+
+  }
+
+  // 交货
+  async submitDeliver() {
+    try {
+      AlertDialog.show({
+        message: JSON.stringify(this.taskDetailInfo, null, 2)
+      })
+      this.deliverParams.id = this.params.id
+      this.deliverParams.deliverPictureList = this.taskDetailInfo.cargoPictureList
+      this.deliverParams.certificatePictureList = this.taskDetailInfo.cargoPickUpPictureList
+
+      await deliverApi(this.deliverParams)
+
+      // 重新获取任务详情数据
+      this.getTaskDetailInfo()
+
+      promptAction.showToast({
+        message: "交货成功"
+      })
+    } catch (e) {
+      console.log("error", e)
+    }
   }
 
   build() {
@@ -237,17 +356,23 @@ struct TaskDetail {
             IToggleCard({ title: "运输路线", toggleCard: false }) {
               this.getTransLineContent()
             }
-            
+
 
             IToggleCard({ title: "物品信息", toggleCard: false })
             IToggleCard({ title: "提货信息", toggleCard: false }) {
               IUpload({
                 title: "请拍照上传回单凭证",
-                imageList: this.taskDetailInfo.cargoPickUpPictureList || []
+                imageList: this.taskDetailInfo.cargoPickUpPictureList || [],
+                onImageListChange: (imageList: ImageListModel[]) => {
+                  this.taskDetailInfo.cargoPickUpPictureList = imageList
+                }
               })
               IUpload({
                 title: "请拍照上传货品照片",
-                imageList: this.taskDetailInfo.cargoPictureList || []
+                imageList: this.taskDetailInfo.cargoPictureList || [],
+                onImageListChange: (imageList: ImageListModel[]) => {
+                  this.taskDetailInfo.cargoPictureList = imageList
+                }
               })
             }
           }

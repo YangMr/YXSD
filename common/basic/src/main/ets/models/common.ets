@@ -11,3 +11,9 @@ export class BaseBuilderClass {
   value: string = ""
   icon?: ResourceStr = ""
 }
+
+export interface ResponseDataModel {
+  code: number
+  msg: string
+  data: string
+}

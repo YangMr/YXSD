@@ -9,7 +9,7 @@ struct TaskList {
   @State
   taskList: TaskListItemDataModel[] = []
   // 任务列表接口传递的参数
-  @State
+  @Prop
   queryParams: TaskListParamsModel = {
     page: 1,
     pageSize: 10,

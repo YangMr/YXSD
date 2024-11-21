@@ -1,11 +1,11 @@
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import { ImageListModel } from '../models';
-import { SaveLocalFile } from '../utils';
 import { IPreview } from './IPreview';
 
 
 @Component
 export struct IUpload {
+
   @Prop
   title: string = ""
   @Prop
@@ -21,6 +21,8 @@ export struct IUpload {
     }),
     customStyle: true
   })
+  onImageListChange: (imageList: ImageListModel[]) => void = () => {
+  }
 
   // 唤醒系统相册
   async selectImage() {
@@ -37,9 +39,10 @@ export struct IUpload {
     // 将选择的图片保存到imageList里面
     this.imageList.push(...data)
 
+    this.onImageListChange(this.imageList)
 
     // 将选择的图片存储到沙箱
-    SaveLocalFile(this.imageList)
+    // SaveLocalFile(this.imageList)
 
   }
 
@@ -60,14 +63,26 @@ export struct IUpload {
 
         ForEach(this.imageList, (item: ImageListModel, index: number) => {
           GridItem() {
-            Image(item.url)
-              .width(95)
-              .height(95)
-              .borderRadius(5)
-              .onClick(() => {
-                this.customDialogController.open()
-                this.index = index
-              })
+            Stack({ alignContent: Alignment.TopEnd }) {
+              Image(item.url)
+                .width(95)
+                .height(95)
+                .borderRadius(5)
+                .onClick(() => {
+                  this.customDialogController.open()
+                  this.index = index
+                })
+
+
+              Image($r("app.media.ic_btn_delete"))
+                .width(30)
+                .height(30)
+                .onClick(() => {
+                  this.imageList.splice(index, 1)
+                  this.onImageListChange(this.imageList)
+                })
+            }
+
           }
         })
 

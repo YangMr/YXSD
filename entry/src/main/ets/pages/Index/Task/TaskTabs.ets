@@ -1,4 +1,5 @@
 import { TabClass } from 'basic'
+import { TaskTypeEnum } from '../../../models'
 import TaskList from './TaskList'
 
 @Component
@@ -55,10 +56,17 @@ export struct TaskTabs {
       Tabs({ controller: this.controller, index: $$this.currentIndex }) {
         ForEach(this.tabsData, (item: TabClass) => {
           TabContent() {
+            // 待提货
             if (item.name === "waiting") {
               TaskList()
             } else if (item.name === "line") {
-
+              TaskList({
+                queryParams: {
+                  page: 1,
+                  pageSize: 5,
+                  status: TaskTypeEnum.Line
+                }
+              })
             } else if (item.name === "finish") {
 
             }

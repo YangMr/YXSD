@@ -1,4 +1,4 @@
-import { TaskListItemDataModel } from '../../../models'
+import { TaskListItemDataModel, TaskTypeEnum } from '../../../models'
 import { router } from '@kit.ArkUI'
 
 @Component
@@ -94,17 +94,22 @@ struct TaskItemCard {
         }
         .alignItems(HorizontalAlign.Start)
 
-        Button("提货", { type: ButtonType.Capsule })
-          .backgroundColor(this.taskItem.enablePickUp ? $r("app.color.primary") : $r("app.color.primary_disabled"))
-          .fontColor($r("app.color.white"))
-          .fontSize(14)
-          .height(32)
-          .enabled(this.taskItem.enablePickUp)
-          .onClick(() => {
-            AlertDialog.show({
-              message: "aaa"
-            })
-          })
+        if (this.taskItem.status === TaskTypeEnum.Waiting) {
+          Button("提货", { type: ButtonType.Capsule })
+            .backgroundColor(this.taskItem.enablePickUp ? $r("app.color.primary") : $r("app.color.primary_disabled"))
+            .fontColor($r("app.color.white"))
+            .fontSize(14)
+            .height(32)
+            .enabled(this.taskItem.enablePickUp)
+
+        } else if (this.taskItem.status === TaskTypeEnum.Line) {
+          Button("交货", { type: ButtonType.Capsule })
+            .backgroundColor($r("app.color.primary"))
+            .fontColor($r("app.color.white"))
+            .fontSize(14)
+            .height(32)
+        }
+
 
       }
       .width("100%")
